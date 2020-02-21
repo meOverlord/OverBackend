@@ -6,6 +6,7 @@ import { TypegooseModule } from "nestjs-typegoose";
 import { AuthModule } from './auth/auth.module';
 import { ClientModule } from './client/client.module';
 import { appConfig, mongoConfig, MONGO_CONFIG_KEYS } from './config';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { appConfig, mongoConfig, MONGO_CONFIG_KEYS } from './config';
         GraphQLModule.forRoot({
             autoSchemaFile: true,
         }),
-        AuthModule, ClientModule,
+        AuthModule, ClientModule, UserModule,
     ],
     controllers: [],
     providers: [],

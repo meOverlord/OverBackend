@@ -28,6 +28,7 @@
     "@nestjs/mongoose": "^6.3.1",
     "@nestjs/passport": "^6.1.1",
     "@nestjs/platform-express": "^6.10.14",
+    "@typegoose/auto-increment": "^0.2.0",
     "@typegoose/typegoose": "^6.3.2",
     "apollo-server-express": "^2.10.1",
     "cache-manager": "^2.11.1",

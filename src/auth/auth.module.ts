@@ -1,4 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { AuthService } from './services/auth/auth.service';
 
-@Module({})
+@Global()
+@Module({
+  providers: [AuthService]
+})
 export class AuthModule {}
