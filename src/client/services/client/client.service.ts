@@ -13,7 +13,7 @@ export class ClientService {
 
     public create(createClientDto: { name: string }): Observable<Client> {
         const createdClient = new this.clientModel(createClientDto);
-        return await createdClient.save().toObservable();
+        return createdClient.save().toObservable();
     }
 
     public findById(id: string): Observable<Client>{

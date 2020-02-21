@@ -1,6 +1,11 @@
 import { registerAs } from '@nestjs/config';
 
-export const mongoConfig = registerAs('mongo', () => ({
-    host: process.env.MONGO_HOST,
-    port: parseInt(process.env.MONGO_PORT, 10) || 5432,
+const namespace = 'mongo';
+
+export const MONGO_CONFIG_KEYS = {
+    URI : namespace + '.uri',
+};
+
+export const mongoConfig = registerAs(namespace, () => ({
+    'uri':  process.env.MONGO_URI,
 }));
