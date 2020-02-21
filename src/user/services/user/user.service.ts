@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/user/models';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of, from } from 'rxjs';
 import { CreateUserInput } from 'src/user/dto';
 import { CreateUserException } from 'src/user/exceptions';
 import { tap } from 'rxjs/operators';
@@ -15,11 +15,12 @@ export class UserService {
 
     public create({name, email}: CreateUserInput): Observable<User> {
         console.log(name, email);
-        if(!name && !email){
+        if(!name || !email){
             return throwError(new CreateUserException());
         }
         const createdUser = new this.userModel({name, email});
-        return createdUser.save().toObservable().pipe(
+        console.log('created user', createdUser, createdUser.save)
+        return from(createdUser.save() as Promise<User>).pipe(
             tap(response => console.log(response))
         );
     }

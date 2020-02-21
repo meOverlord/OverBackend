@@ -1,18 +1,17 @@
-import { IsDate, IsString, IsNumber } from 'class-validator';
-import { prop, plugin } from '@typegoose/typegoose';
-import { ObjectType, Field, ID } from 'type-graphql';
-import { AutoIncrementSimplePluginOptions, AutoIncrementSimple } from '@typegoose/auto-increment';
+import { AutoIncrementID, AutoIncrementOptionsID } from '@typegoose/auto-increment';
+import { plugin, prop } from '@typegoose/typegoose';
+import { IsDate, IsNumber, IsString } from 'class-validator';
+import { Field, ID, ObjectType } from 'type-graphql';
+
 
 @ObjectType()
-@plugin<AutoIncrementSimplePluginOptions>(
-    AutoIncrementSimple, [{ field: "id" }]
-)
+@plugin<AutoIncrementOptionsID>(AutoIncrementID)
 export class User{
     
     @IsNumber()
     @prop()
     @Field(type => ID)
-    id: number;
+    _id: number;
 
     @IsString()
     @prop()
