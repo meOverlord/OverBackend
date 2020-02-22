@@ -3,9 +3,11 @@ import { User } from 'src/user/models';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Observable, throwError, of, from } from 'rxjs';
+import { genSalt, hash } from 'bcrypt';
+
 import { CreateUserInput } from 'src/user/dto';
 import { CreateUserException, UserCreationErrorCodes } from 'src/user/exceptions';
-import { tap } from 'rxjs/operators';
+import { tap, mergeMap, map } from 'rxjs/operators';
 import { AppException } from 'src/exceptions';
 
 @Injectable()
@@ -19,10 +21,20 @@ export class UserService {
         if(error){
             return throwError(error);
         }
-        const createdUser = new this.userModel({name, email, password});
-        return from(createdUser.save() as Promise<User>).pipe(
-            tap(response => console.log(response))
-        );
+
+        return from(genSalt(10))
+            .pipe(
+                mergeMap(passwordSalt => {
+                    return from(hash(password, passwordSalt)).pipe(
+                        map(hash => ({passwordSalt, hash}))
+                    )
+                }),
+                mergeMap(({passwordSalt, hash}) => {
+                    const createdUser = new this.userModel(
+                        {name, email, password: hash, passwordSalt});
+                    return from(createdUser.save() as Promise<User>)
+                })
+            );
     }
 
     public findByIdent(ident: string): Observable<User>{
@@ -48,6 +60,7 @@ export class UserService {
         if(password.length < 8){
             return new CreateUserException(UserCreationErrorCodes.WEAK_PASSWORD);
         }
+
         return null;
     }
 }
