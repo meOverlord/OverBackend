@@ -5,17 +5,16 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypegooseModule } from "nestjs-typegoose";
 import { AuthModule } from './auth/auth.module';
 import { ClientModule } from './client/client.module';
-import { appConfig, mongoConfig, MONGO_CONFIG_KEYS } from './config';
-import { AppExceptionFilter, AppException, formatGraphQlError } from './exceptions';
+import { appConfig, jwtConfig, mongoConfig, MONGO_CONFIG_KEYS } from './config';
+import { AppExceptionFilter, formatGraphQlError } from './exceptions';
 import { UserModule } from './user/user.module';
-import { GraphQLError } from 'graphql';
 
 
 @Module({
   imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            load: [appConfig, mongoConfig]
+            load: [appConfig, mongoConfig, jwtConfig]
         }),
         TypegooseModule.forRootAsync({
             imports: [ConfigModule],
