@@ -16,7 +16,6 @@ export class CreateUserResolver {
   @Mutation(returns => User)
   public createUser(@Args('input')
   input: CreateUserInput): Observable<User>{
-    console.log(input);
     return this.userServise.create(input);
   }
 }
