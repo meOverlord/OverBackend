@@ -11,15 +11,15 @@ export class User{
     @IsNumber()
     @prop()
     @Field(type => ID)
-    _id: number;
+    _id!: number;
 
     @IsString()
-    @prop()
+    @prop({unique: true})
 	@Field()
-    name?: string;
+    name!: string;
 
     @IsString()
-    @prop()
+    @prop({unique: true})
 	@Field({nullable: true})
     email?: string;
 
