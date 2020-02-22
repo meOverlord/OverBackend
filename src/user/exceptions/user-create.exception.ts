@@ -6,6 +6,7 @@ export class CreateUserException  extends AppException{
             error = [error];
         }
         super(
+            400,
             ErrorCodes.USER_CREATION_ERROR,
             'user creation error',
             (error as Array<UserCreationErrorCodes>).map(

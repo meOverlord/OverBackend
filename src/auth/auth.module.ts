@@ -7,9 +7,11 @@ import { PassportModule } from '@nestjs/passport';
 
 @Global()
 @Module({
-  imports: [PassportModule],
+  imports: [PassportModule.register({
+    defaultStrategy: 'jwt'
+  })],
   providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [LocalStrategy],
+  exports: [AuthService],
   controllers: [AuthController],
 })
 export class AuthModule {}

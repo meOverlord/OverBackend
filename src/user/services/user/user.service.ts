@@ -3,7 +3,7 @@ import { ReturnModelType } from '@typegoose/typegoose';
 import { hash } from 'bcrypt';
 import { InjectModel } from 'nestjs-typegoose';
 import { from, Observable, throwError } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, tap } from 'rxjs/operators';
 import { AppException } from 'src/exceptions';
 import { CreateUserInput } from 'src/user/dto';
 import { CreateUserException, UserCreationErrorCodes } from 'src/user/exceptions';
@@ -26,19 +26,23 @@ export class UserService {
             .pipe(
                 mergeMap((hash) => {
                     const createdUser = new this.userModel(
-                        {name, email, password: hash});
+                        {
+                            name,
+                            email : email.toLowerCase(),
+                            password: hash
+                        });
                     return (createdUser.save() as Promise<User>)
                 })
             );
     }
 
     public findByIdent(ident: string): Observable<User>{
-        return this.userModel.find({
+        return from(this.userModel.findOne({
             $or: [
-                {'name' : ident},
-                {'email' : ident},
+                {'nameLower' : ident.toLowerCase()},
+                {'email' : ident.toLowerCase()},
             ]
-        }).exec().toObservable();
+        }).exec() as Promise<User>);
     }
 
 

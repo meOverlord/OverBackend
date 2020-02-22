@@ -11,10 +11,12 @@ export class AuthController {
     constructor(
         private authService: AuthService){}
 
-    @UseGuards(AuthGuard('local'))
+    @UseGuards(LocalAuthGuard)
     @Post('signin')
     public signin(@Request() req):  Observable<any>{
+        console.log(req.user);
+        const user = req.user as User;
         return of(
-            this.authService.generateJwt(req.user as User));
+            this.authService.generateJwt({_id: user._id, name: user.name}));
     }
 }

@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { sign } from 'jsonwebtoken';
-
-import { Observable, from, throwError } from 'rxjs';
-import { mergeMap, map, catchError } from 'rxjs/operators';
-import { compare } from 'bcrypt';
-
-import { UserService } from 'src/user/services/user/user.service';
-import { User } from 'src/user/models';
-import { AuthCredentialException, AuthUnauthorizedException } from 'src/auth/exceptions';
 import { ConfigService } from '@nestjs/config';
+import { compare } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
+import { from, Observable, throwError } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { AuthCredentialException, AuthUnauthorizedException } from 'src/auth/exceptions';
 import { JWT_CONFIG_KEYS } from 'src/config';
+import { User } from 'src/user/models';
+import { UserService } from 'src/user/services/user/user.service';
+
+
 
 @Injectable()
 export class AuthService {
@@ -33,17 +33,23 @@ export class AuthService {
                         })
                     )
                 ),
-                catchError(err => throwError(new AuthCredentialException()))
+                catchError(err => {
+                    console.log('catched error', err);
+                    return throwError(new AuthCredentialException())
+                })
             );
     }
 
     public generateJwt({_id, name}){
+        let secret: string = this.config.get(JWT_CONFIG_KEYS.SECRET);
+        secret = secret.replace(/\\n/gi, '\n');
+        console.log(_id, name);
         return {
             access_token: sign({
                 name,
                 sub: _id
             },
-            this.config.get(JWT_CONFIG_KEYS.SECRET),
+            secret,
             {
                 algorithm: 'RS256',
                 expiresIn: '1h'

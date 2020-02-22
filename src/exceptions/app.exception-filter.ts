@@ -1,10 +1,10 @@
-import { Catch, ArgumentsHost } from "@nestjs/common";
-import { AppException, ErrorMap } from "./app.exception";
+import { ArgumentsHost, Catch } from "@nestjs/common";
 import { GqlArgumentsHost, GqlExceptionFilter } from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
+import { AppException, ErrorMap } from "./app.exception";
 
 @Catch(AppException)
-export class AppExceptionFilter implements GqlExceptionFilter{
+export class AppGqlExceptionFilter implements GqlExceptionFilter{
 
     catch(exception: AppException, host: ArgumentsHost) {
         const gqlHost = GqlArgumentsHost.create(host);
@@ -14,22 +14,19 @@ export class AppExceptionFilter implements GqlExceptionFilter{
 }
 
 export function formatGraphQlError(err: GraphQLError): GraphQLError {
-    let code, params;
-        if(err.originalError instanceof AppException){
-            const appEx = err.originalError as AppException;
-            code = appEx.code.toString();
-            params = appEx.params;
-        }
-        return new GraphQLError(
-            err.message,
-            undefined,//nodes
-            undefined,//source
-            undefined,//positions
-            err.path,
-            err.originalError,
-            {
-                code, error: ErrorMap.get(code), params
-            }
-        );
+    let payload: any;
+    if(err.originalError instanceof AppException){
+        const appEx = err.originalError as AppException;
+        payload = appEx.getResponse();
+    }
+    return new GraphQLError(
+        err.message,
+        undefined,//nodes
+        undefined,//source
+        undefined,//positions
+        err.path,
+        err.originalError,
+        payload
+    );
 }
 

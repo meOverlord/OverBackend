@@ -6,7 +6,7 @@ import { TypegooseModule } from "nestjs-typegoose";
 import { AuthModule } from './auth/auth.module';
 import { ClientModule } from './client/client.module';
 import { appConfig, jwtConfig, mongoConfig, MONGO_CONFIG_KEYS } from './config';
-import { AppExceptionFilter, formatGraphQlError } from './exceptions';
+import { formatGraphQlError, AppGqlExceptionFilter } from './exceptions';
 import { UserModule } from './user/user.module';
 
 
@@ -36,8 +36,8 @@ import { UserModule } from './user/user.module';
     providers: [
         {
             provide: APP_FILTER,
-            useClass: AppExceptionFilter,
-          },
+            useClass: AppGqlExceptionFilter,
+        },
     ],
 })
 export class AppModule {}

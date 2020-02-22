@@ -1,18 +1,13 @@
-export class AppException extends Error{
-    private _code: ErrorCodes;
-    private _params: Array<string>;
+import { HttpException } from "@nestjs/common";
 
-    constructor(code?: ErrorCodes, message?: string, params?: Array<string>){
-        super(message)
-        this._code = code;
-        this._params = params;
-    }
+export class  AppException extends HttpException{
 
-    public get code(): number{
-        return this._code;
-    }
-    public get params(): Array<string>{
-        return this._params;
+    constructor(httpCode: number, code?: ErrorCodes, message?: string, params?: Array<string>){
+        super({
+            code,
+            message,
+            params,
+        }, httpCode);
     }
 }
 
