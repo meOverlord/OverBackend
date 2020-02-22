@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Observable, from, throwError } from 'rxjs';
+import { mergeMap, map, catchError } from 'rxjs/operators';
+import { compare } from 'bcrypt';
+
 import { UserService } from 'src/user/services/user/user.service';
-import { map } from 'rxjs/operators';
+import { User } from 'src/user/models';
+import { AuthCredentialException } from 'src/auth/expcetions';
 
 @Injectable()
 export class AuthService {
@@ -10,10 +14,20 @@ export class AuthService {
         
     }
 
-    public validateUser(ident: string, password: string): Observable<boolean>{
+    public validateUser(ident: string, password: string): Observable<User>{
         return this.userService.findByIdent(ident)
             .pipe(
-                map(user => user?.password === password)
+                mergeMap(user => from(compare(password, user?.password))
+                    .pipe(
+                        map(v => {
+                            if(!v){
+                                throw new AuthCredentialException();
+                            }
+                            return user; 
+                        })
+                    )
+                ),
+                catchError(err => throwError(new AuthCredentialException()))
             );
     }
 

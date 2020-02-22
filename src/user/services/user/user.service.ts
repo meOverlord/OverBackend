@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/user/models';
-import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { Observable, throwError, of, from } from 'rxjs';
-import { genSalt, hash } from 'bcrypt';
-
+import { hash } from 'bcrypt';
+import { InjectModel } from 'nestjs-typegoose';
+import { from, Observable, throwError } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { AppException } from 'src/exceptions';
 import { CreateUserInput } from 'src/user/dto';
 import { CreateUserException, UserCreationErrorCodes } from 'src/user/exceptions';
-import { tap, mergeMap, map } from 'rxjs/operators';
-import { AppException } from 'src/exceptions';
+import { User } from 'src/user/models';
+
 
 @Injectable()
 export class UserService {
@@ -22,17 +22,12 @@ export class UserService {
             return throwError(error);
         }
 
-        return from(genSalt(10))
+        return from(hash(password, 10))
             .pipe(
-                mergeMap(passwordSalt => {
-                    return from(hash(password, passwordSalt)).pipe(
-                        map(hash => ({passwordSalt, hash}))
-                    )
-                }),
-                mergeMap(({passwordSalt, hash}) => {
+                mergeMap((hash) => {
                     const createdUser = new this.userModel(
-                        {name, email, password: hash, passwordSalt});
-                    return from(createdUser.save() as Promise<User>)
+                        {name, email, password: hash});
+                    return (createdUser.save() as Promise<User>)
                 })
             );
     }

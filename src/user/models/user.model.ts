@@ -33,10 +33,6 @@ export class User{
 	@Field({nullable: true})
     password?: string;
 
-    @IsString()
-    @prop({required : false})
-    passwordSalt?: string;
-
     @IsDate()
     @prop({required: true, default: Date.now()})
 	@Field()

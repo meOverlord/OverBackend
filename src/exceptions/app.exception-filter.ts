@@ -1,5 +1,5 @@
 import { Catch, ArgumentsHost } from "@nestjs/common";
-import { AppException } from "./app.exception";
+import { AppException, ErrorMap } from "./app.exception";
 import { GqlArgumentsHost, GqlExceptionFilter } from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
 
@@ -28,7 +28,7 @@ export function formatGraphQlError(err: GraphQLError): GraphQLError {
             err.path,
             err.originalError,
             {
-                code, params
+                code, error: ErrorMap.get(code), params
             }
         );
 }
