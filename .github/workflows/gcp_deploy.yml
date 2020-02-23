@@ -78,8 +78,7 @@ jobs:
     # Activate beta commands
     - name: Activate cloud run cli
       run: |
-        gcloud components install beta
-      run: |
+        gcloud components install beta &&
         gcloud components update
         
     # Deploy the Docker image to the Cloud Run
