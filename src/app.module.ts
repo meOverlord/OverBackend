@@ -19,6 +19,7 @@ import { UserModule } from './user/user.module';
         TypegooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => {
+console.log(configService.get(MONGO_CONFIG_KEYS.URI));
                 return {
                     uri: configService.get(MONGO_CONFIG_KEYS.URI),
                     useNewUrlParser: true,
