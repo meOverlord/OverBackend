@@ -1,14 +1,4 @@
-# This workflow will build a docker container, publish it to Google Container Registry, and deploy it to GKE.
-#
-# To configure this workflow:
-#
-# 1. Ensure that your repository contains the necessary configuration for your Google Kubernetes Engine cluster, including deployment.yml, kustomization.yml, service.yml, etc.
-#
-# 2. Set up secrets in your workspace: GKE_PROJECT with the name of the project, GKE_EMAIL with the service account email, GKE_KEY with the Base64 encoded JSON service account key (https://github.com/GoogleCloudPlatform/github-actions/tree/docs/service-account-key/setup-gcloud#inputs).
-#
-# 3. Change the values for the GKE_ZONE, GKE_CLUSTER, IMAGE, REGISTRY_HOSTNAME and DEPLOYMENT_NAME environment variables (below).
-
-name: Build and Deploy to GKE
+name: Build and Deploy to GCR
 
 on:
   push:
@@ -37,9 +27,10 @@ jobs:
     # Setup gcloud CLI
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
-        version: '270.0.0'
+        version: '281 .0.0'
         service_account_email: ${{ secrets.GCR_EMAIL }}
         service_account_key: ${{ secrets.GCR_KEY }}
+        export_default_credentials: true
 
     # Configure docker to use the gcloud command-line tool as a credential helper
     - run: |
