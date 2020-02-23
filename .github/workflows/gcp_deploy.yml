@@ -48,7 +48,7 @@ jobs:
       with:
         tokenPrefix: '@@'
         tokenSuffix: '@@'
-        files: '["**/*.modele"]'
+        files: '[".env.modele"]'
       env:
         MONGO_URI: ${{ secrets.MONGO_URI }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
