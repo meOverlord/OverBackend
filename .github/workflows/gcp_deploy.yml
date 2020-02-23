@@ -47,7 +47,7 @@ jobs:
         # via gcloud command-line tool.
         gcloud auth configure-docker
 
-    # Replace tokens
+    # Replace tokens with secrets
     - name: Token replace
       uses: cschleiden/replace-tokens@v1
       with:
