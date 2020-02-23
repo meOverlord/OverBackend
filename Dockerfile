@@ -15,4 +15,5 @@ FROM node:12-alpine
 
 WORKDIR /app
 COPY --from=builder /app ./
+ENV PORT 8080
 CMD ["npm", "run", "start:prod"]
