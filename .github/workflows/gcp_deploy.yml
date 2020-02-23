@@ -22,7 +22,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v1
 
     - name: Setup python
       uses: actions/setup-python@v1
@@ -32,9 +32,14 @@ jobs:
     # Setup gcloud CLI
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
+        version: '281.0.0'
         service_account_email: ${{ secrets.GCR_EMAIL }}
         service_account_key: ${{ secrets.GCR_KEY }}
-        export_default_credentials: true
+
+     #Configure gcloud CLI
+    - name: gcloud Set up
+      run: |
+        gcloud config set project $GCR_PROJECT
 
     # Configure docker to use the gcloud command-line tool as a credential helper
     - run: |
@@ -70,17 +75,17 @@ jobs:
       run: |
         docker push $REGISTRY_HOSTNAME/$GCR_PROJECT/$IMAGE:$GITHUB_SHA
 
-    # Deploy the Docker image to the GKE cluster
+    # Activate beta commands
+    - name: Activate cloud run cli
+      run: |
+        gcloud components install beta
+      run: |
+        gcloud components update
+        
+    # Deploy the Docker image to the Cloud Run
     - name: Cloud Run
-      uses: stefda/action-cloud-run@v1.0
-      with:
-        # Name of the docker image
-        image: $REGISTRY_HOSTNAME/$GCR_PROJECT/$IMAGE:${GITHUB_SHA}
-        # Name of the service in Cloud Run
-        service: $GCR_SERVICE
-        # GCR project
-        project: $GCR_PROJECT
-        # GCR region
-        region: $GCR_ZONE
-        # GCR service key with storage and run permissions
-        service key: ${{ secrets.GCR_KEY }}
+      run: |
+        gcloud beta run deploy $GCR_SERVICE
+        --image $REGISTRY_HOSTNAME/$GCR_PROJECT/$IMAGE:${GITHUB_SHA}
+        --region $GCR_ZONE
+        --region managed
