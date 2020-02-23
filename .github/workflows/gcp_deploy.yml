@@ -72,13 +72,13 @@ jobs:
 
     # Activate beta commands
     - name: Activate cloud run cli
-      run: |
+      run: >
         gcloud components install beta &&
         gcloud components update
         
     # Deploy the Docker image to the Cloud Run
     - name: Cloud Run
-      run: |
+      run: >
         gcloud beta run deploy $GCR_SERVICE
         --image $REGISTRY_HOSTNAME/$GCR_PROJECT/$IMAGE:${GITHUB_SHA}
         --region $GCR_ZONE
