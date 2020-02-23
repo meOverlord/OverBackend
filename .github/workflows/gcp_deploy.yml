@@ -24,11 +24,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Setup python
-      uses: actions/setup-python@v1
-      with:
-        python-version: '2.7.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
-
     # Setup gcloud CLI
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
