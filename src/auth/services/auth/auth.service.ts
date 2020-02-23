@@ -33,10 +33,7 @@ export class AuthService {
                         })
                     )
                 ),
-                catchError(err => {
-                    console.log('catched error', err);
-                    return throwError(new AuthCredentialException())
-                })
+                catchError(err => throwError(new AuthCredentialException()))
             );
     }
 

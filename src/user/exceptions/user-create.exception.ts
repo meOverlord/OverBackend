@@ -1,4 +1,5 @@
 import { AppException, ErrorCodes } from "src/exceptions";
+import { HttpStatus } from "@nestjs/common";
 
 export class CreateUserException  extends AppException{
     constructor(error: UserCreationErrorCodes | Array<UserCreationErrorCodes>){
@@ -6,7 +7,7 @@ export class CreateUserException  extends AppException{
             error = [error];
         }
         super(
-            400,
+            HttpStatus.BAD_REQUEST,
             ErrorCodes.USER_CREATION_ERROR,
             'user creation error',
             (error as Array<UserCreationErrorCodes>).map(

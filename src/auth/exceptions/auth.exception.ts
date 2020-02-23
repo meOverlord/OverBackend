@@ -1,13 +1,14 @@
 import { AppException, ErrorCodes } from "src/exceptions";
+import { HttpStatus } from "@nestjs/common";
 
 export class AuthCredentialException extends AppException{
     constructor(){
-        super(400, ErrorCodes.AUTH_CREDENTIAL_ERROR)
+        super(HttpStatus.BAD_REQUEST, ErrorCodes.AUTH_CREDENTIAL_ERROR)
     }
 }
 
 export class AuthUnauthorizedException extends AppException{
     constructor(){
-        super(401, ErrorCodes.AUTH_UNAUTHORIZED_ERROR)
+        super(HttpStatus.UNAUTHORIZED, ErrorCodes.AUTH_UNAUTHORIZED_ERROR)
     } 
 }

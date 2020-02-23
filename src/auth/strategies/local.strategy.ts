@@ -25,10 +25,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
                 throw new AuthUnauthorizedException();
             }
             return user;
-        }),
-        catchError(err => {
-          console.log(err);
-          return throwError(err);
         })
     ).toPromise();
   }
