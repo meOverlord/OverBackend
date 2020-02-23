@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
 import { from, Observable, throwError } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AuthCredentialException, AuthUnauthorizedException } from 'src/auth/exceptions';
@@ -16,6 +16,7 @@ export class AuthService {
 
     constructor(
         private userService: UserService,
+        private jwtService: JwtService,
         private config: ConfigService){
         
     }
@@ -38,18 +39,11 @@ export class AuthService {
     }
 
     public generateJwt({_id, name}){
-        let secret: string = this.config.get(JWT_CONFIG_KEYS.SECRET);
-        secret = secret.replace(/\\n/gi, '\n');
-        console.log(_id, name);
+        const secret = this.config.get(JWT_CONFIG_KEYS.SECRET);
         return {
-            access_token: sign({
+            access_token: this.jwtService.sign({
                 name,
                 sub: _id
-            },
-            secret,
-            {
-                algorithm: 'RS256',
-                expiresIn: '1h'
             }),
         }
     }

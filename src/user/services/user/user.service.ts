@@ -45,6 +45,11 @@ export class UserService {
         }).exec() as Promise<User>);
     }
 
+    public findById(id: number): Observable<User>{
+        return from(this.userModel
+            .findById(id).exec() as Promise<User>);
+    }
+
 
     private controlUserCreation({name, email, password}: CreateUserInput): AppException{
         const errors = [];

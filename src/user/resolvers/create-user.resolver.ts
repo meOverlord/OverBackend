@@ -12,7 +12,6 @@ export class CreateUserResolver {
     constructor(
         private userServise: UserService){}
 
-
   @Mutation(returns => User)
   public createUser(@Args('input')
   input: CreateUserInput): Observable<User>{

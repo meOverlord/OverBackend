@@ -29,6 +29,7 @@ import { UserModule } from './user/user.module';
         GraphQLModule.forRoot({
             autoSchemaFile: true,
             formatError: formatGraphQlError,
+            context: ({ req }) => ({ req }),
         }),
         AuthModule, ClientModule, UserModule,
     ],
