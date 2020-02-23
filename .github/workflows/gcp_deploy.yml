@@ -45,22 +45,22 @@ jobs:
     - run: |
         # Set up docker to authenticate
         # via gcloud command-line tool.
-        gcloud auth configure-docker  
+        gcloud auth configure-docker
 
-	# Replace tokens
-	- name: Token replace
-	  uses: cschleiden/replace-tokens@v1
-	  with:
-		files: '["**/*.modele"]'
-		tokenPrefix: '@@'
-		tokenSuffix: '@@'
+    # Replace tokens
+    - name: Token replace
+      uses: cschleiden/replace-tokens@v1
+      with:
+        tokenPrefix: '@@'
+        tokenSuffix: '@@'
+        files: '["**/*.modele"]'
       env:
         MONGO_URI: ${{ secrets.MONGO_URI }}
-		JWT_SECRET: ${{ secrets.JWT_SECRET }}
-		
-	- name: Token write
-	  run: |
-	    mv .env.modele .env
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+    - name: Token write
+      run: |
+        mv .env.modele .env
 
     # Build the Docker image
     - name: Build
@@ -74,17 +74,17 @@ jobs:
       run: |
         docker push $REGISTRY_HOSTNAME/$GCR_PROJECT/$IMAGE:$GITHUB_SHA
 
-	# Deploy the Docker image to the GKE cluster
-	- name: Cloud Run
-	  uses: stefda/action-cloud-run@v1.0
-	  with:
-	    # Name of the docker image
-	    image: $REGISTRY_HOSTNAME/$GCR_PROJECT/$IMAGE:${GITHUB_SHA}
-	    # Name of the service in Cloud Run
-	    service: $GCR_SERVICE
-	    # GCR project
-	    project: $GCR_PROJECT
-	    # GCR region
-	    region: $GCR_ZONE
-	    # GCR service key with storage and run permissions
-	    service key: ${{ secrets.GCR_KEY }}
+    # Deploy the Docker image to the GKE cluster
+    - name: Cloud Run
+      uses: stefda/action-cloud-run@v1.0
+      with:
+        # Name of the docker image
+        image: $REGISTRY_HOSTNAME/$GCR_PROJECT/$IMAGE:${GITHUB_SHA}
+        # Name of the service in Cloud Run
+        service: $GCR_SERVICE
+        # GCR project
+        project: $GCR_PROJECT
+        # GCR region
+        region: $GCR_ZONE
+        # GCR service key with storage and run permissions
+        service key: ${{ secrets.GCR_KEY }}
