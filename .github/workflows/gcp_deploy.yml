@@ -82,4 +82,4 @@ jobs:
         gcloud beta run deploy $GCR_SERVICE
         --image $REGISTRY_HOSTNAME/$GCR_PROJECT/$IMAGE:${GITHUB_SHA}
         --region $GCR_ZONE
-        --region managed
+        --platform managed
