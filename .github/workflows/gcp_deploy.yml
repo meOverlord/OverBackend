@@ -58,6 +58,7 @@ jobs:
         MONGO_URI: ${{ secrets.MONGO_URI }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
+    # Write token
     - name: Token write
       run: |
         mv .env.modele .env
