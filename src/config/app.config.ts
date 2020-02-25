@@ -11,7 +11,7 @@ export const JWT_CONFIG_KEYS = {
 
 export const jwtConfig = registerAs('jwt', () => {
     const replaceRegex = /\\n/gi;
-    let secret: string = process.env.JWT_SECRET;
+    let secret: string = process.env.JWT_SECRET || 'secret baby';
     secret = secret.replace(replaceRegex, '\n');
     return {
         secret,
