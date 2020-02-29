@@ -5,7 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypegooseModule } from "nestjs-typegoose";
 import { AuthModule } from './auth/auth.module';
 import { ClientModule } from './client/client.module';
-import { appConfig, jwtConfig, mongoConfig, MONGO_CONFIG_KEYS } from './config';
+import { appConfig, jwtConfig, mongoConfig, MONGO_CONFIG_KEYS, corsConfig } from './config';
 import { formatGraphQlError, AppGqlExceptionFilter, AppExceptionFilter } from './exceptions';
 import { UserModule } from './user/user.module';
 
@@ -29,7 +29,8 @@ import { UserModule } from './user/user.module';
         GraphQLModule.forRoot({
             autoSchemaFile: true,
             formatError: formatGraphQlError,
-            context: ({ req }) => ({ req }),
+			context: ({ req }) => ({ req }),
+			cors: corsConfig,
         }),
         AuthModule, ClientModule, UserModule,
     ],
