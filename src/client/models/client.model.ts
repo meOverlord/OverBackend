@@ -1,16 +1,18 @@
-import { IsString } from 'class-validator';
-import { prop } from '@typegoose/typegoose';
+import { AutoIncrementOptionsID, AutoIncrementID } from '@typegoose/auto-increment';
+import { IsString, IsNumber } from 'class-validator';
+import { prop, plugin } from '@typegoose/typegoose';
 import { ObjectType, Field, ID } from 'type-graphql';
 
 import { LegalId } from "./legal-id.model";
 
 @ObjectType()
+@plugin<AutoIncrementOptionsID>(AutoIncrementID)
 export class Client{
     
-    @IsString()
-    @prop({required: true})
+    @IsNumber()
+    @prop()
     @Field(type => ID)
-    id: string;
+    _id: number;
 
     @IsString()
     @prop({required: true})
@@ -27,8 +29,8 @@ export class Client{
 	@Field(type => [LegalId])
     legalIds?: Array<LegalId>;
     
-    @IsString()
+    @IsNumber()
     @prop({required: true})
     @Field()
-    userId: string;
+    userId: number;
 }

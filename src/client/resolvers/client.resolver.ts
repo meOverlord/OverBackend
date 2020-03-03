@@ -1,11 +1,14 @@
-import { Query, Resolver, Mutation } from '@nestjs/graphql';
+import { GqlAuthGuard } from 'src/auth/guards';
+import { UseGuards } from '@nestjs/common';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { JwtPayload } from 'src/auth/strategies';
+import { CurrentUser } from 'src/user/decorators';
 import { Arg, Args } from 'type-graphql';
 import { ClientNotFoundException, ClientsNotRetrivableException } from '../exceptions/client.exception';
 import { Client } from '../models';
 import { ClientService, FindAllClientsInput } from '../services/client';
-import { textChangeRangeIsUnchanged } from 'typescript';
 
 
 @Resolver(of => Client)
@@ -14,9 +17,12 @@ export class ClientResolver {
     constructor(
         private clientService: ClientService){}
 
-    @Query(returns => Client)
-    public client(@Arg('id') id: string): Observable<Client> {
-        return this.clientService.findById(id).pipe(
+	@Query(returns => Client)
+	@UseGuards(GqlAuthGuard)
+    public client(
+		@CurrentUser() payload: JwtPayload,
+		@Arg('id') id: number): Observable<Client> {
+        return this.clientService.findById(payload._id, id).pipe(
             map(client => {
                 if(!client){
                     throw new ClientNotFoundException(id);
@@ -26,9 +32,12 @@ export class ClientResolver {
         );
     }
 
-    @Query(returns => [Client])
-    public clients(@Args(){ skip, take }: FindAllClientsInput): Observable<Array<Client>>{
-        return this.clientService.findAll({skip, take}).pipe(
+	@Query(returns => [Client])
+	@UseGuards(GqlAuthGuard)
+    public clients(
+		@CurrentUser() payload: JwtPayload,
+		@Args()input?: FindAllClientsInput): Observable<Array<Client>>{
+		return this.clientService.findAll(payload._id, input || {}).pipe(
             map(clients => {
                 if(!clients){
                     throw new ClientsNotRetrivableException();
@@ -37,10 +46,4 @@ export class ClientResolver {
             })
         );
     }
-
-
-  @Mutation(returns => Client)
-  public createClient(){
-    return null;
-  }
 }

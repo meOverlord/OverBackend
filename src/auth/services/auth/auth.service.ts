@@ -39,7 +39,6 @@ export class AuthService {
     }
 
     public generateJwt({_id, name}){
-        const secret = this.config.get(JWT_CONFIG_KEYS.SECRET);
         return {
             access_token: this.jwtService.sign({
                 name,

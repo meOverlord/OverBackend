@@ -1,9 +1,11 @@
+import { CreateClientInput } from './inputs';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Client } from 'src/client/models';
 import { FindAllClientsInput } from './';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
+
 
 @Injectable()
 export class ClientService {
@@ -11,20 +13,23 @@ export class ClientService {
         @InjectModel(Client) private readonly clientModel: ReturnModelType<typeof Client>
     ) {}
 
-    public create(createClientDto: { name: string }): Observable<Client> {
+    public create(createClientDto: CreateClientInput): Observable<Client> {
         const createdClient = new this.clientModel(createClientDto);
-        return createdClient.save().toObservable();
+        return from(createdClient.save() as Promise<Client>);
     }
 
-    public findById(id: string): Observable<Client>{
-        return this.clientModel.findById(id).toObservable();
+	public findById(owner: number,id: number): Observable<Client>{
+        return this.clientModel.findOne({
+			id,
+			userId: owner,
+		}).toObservable();
     }
 
-    public findAll(input?: FindAllClientsInput): Observable<Array<Client> | null>{
+    public findAll(owner: number, input?: FindAllClientsInput): Observable<Array<Client> | null>{
         const skip = input?.skip  || 0;
         const limit = input?.take || 20;
-        return this.clientModel.findAll(undefined, undefined, {
+		return from(this.clientModel.find({userId: owner}, undefined, {
             skip, limit
-        }).exec().toObservable();
+		}).exec() as Promise<Array<Client> | null>);
     }
 }
