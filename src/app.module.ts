@@ -30,7 +30,10 @@ import { UserModule } from './user/user.module';
             autoSchemaFile: true,
             formatError: formatGraphQlError,
 			context: ({ req }) => ({ req }),
-			cors: corsConfig,
+			cors: {
+				credentials: true,
+				origin: true,
+			},
         }),
         AuthModule, ClientModule, UserModule,
     ],
