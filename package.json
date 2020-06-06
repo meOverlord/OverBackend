@@ -35,7 +35,7 @@
 		"@nestjs/platform-express": "^6.10.14",
 		"@typegoose/auto-increment": "^0.2.0",
 		"@typegoose/typegoose": "^6.3.2",
-		"apollo-server-express": "^2.10.1",
+		"apollo-server-express": "^2.14.2",
 		"bcrypt": "^4.0.0",
 		"cache-manager": "^2.11.1",
 		"class-validator": "^0.11.0",
