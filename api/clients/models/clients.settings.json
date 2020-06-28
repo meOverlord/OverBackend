@@ -8,5 +8,17 @@
     "increments": true,
     "timestamps": true
   },
-  "attributes": {}
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "comments": {
+      "type": "text"
+    },
+    "owner": {
+      "plugin": "users-permissions",
+      "model": "user",
+      "via": "clients"
+    }
+  }
 }
