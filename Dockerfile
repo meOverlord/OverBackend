@@ -1,19 +1,14 @@
-FROM node:12 as builder
+FROM node:12-slim
 
-ENV NODE_ENV build
+WORKDIR /usr/src/app
+ENV NODE_ENV=production
 
-WORKDIR /app
-COPY ./package.json ./
-COPY ./.env ./
-RUN npm install
-COPY . .
+COPY package*.json ./
+
+RUN npm install --only=production
+
+COPY . ./
+
 RUN npm run build
 
-# ---
-
-FROM node:12-alpine
-
-WORKDIR /app
-COPY --from=builder /app ./
-ENV PORT 8080
-CMD ["npm", "run", "start:prod"]
+CMD [ "npm", "start" ]

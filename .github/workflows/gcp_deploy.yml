@@ -42,22 +42,6 @@ jobs:
         # via gcloud command-line tool.
         gcloud auth configure-docker
 
-    # Replace tokens with secrets
-    - name: Token replace
-      uses: cschleiden/replace-tokens@v1
-      with:
-        tokenPrefix: '@@'
-        tokenSuffix: '@@'
-        files: '[".env.modele"]'
-      env:
-        MONGO_URI: ${{ secrets.MONGO_URI }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
-    # Write token
-    - name: Token write
-      run: |
-        mv .env.modele .env
-
     # Build the Docker image
     - name: Build
       run: |        
