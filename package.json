@@ -1,5 +1,6 @@
 {
   "name": "my-project-2",
+  "name": "backend",
   "private": true,
   "version": "0.1.0",
   "description": "A Strapi application",
